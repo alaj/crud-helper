@@ -1,0 +1,27 @@
+{
+  "name": "crud-helper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alaj/crud-helper.git"
+  },
+  "author": "Alan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alaj/crud-helper/issues"
+  },
+  "homepage": "https://github.com/alaj/crud-helper#readme",
+  "dependencies": {
+    "rxjs": "^6.5.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3"
+  }
+}
