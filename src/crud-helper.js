@@ -8,11 +8,10 @@ module.exports = class CrudHelper {
     this.sortCb = config.sort
     this.filterCb = config.filter
     this.deleteCb = config.delete
-    this.dataSource$ = new rxjs.BehaviorSubject([])
+    this.dataSource = []
     this.editData$ = new rxjs.BehaviorSubject([])
     this.viewData$ = new rxjs.BehaviorSubject([])
     this.subscriptions = []
-    this.dataSourceSubscription = this.dataSource$.subscribe(this.editData$)
 
     this.editDataSubscription = this.editData$.pipe(
       op.map(data => {
@@ -29,14 +28,12 @@ module.exports = class CrudHelper {
       })
     ).subscribe(this.viewData$)
 
-    this.subscriptions.push(this.dataSourceSubscription)
     this.subscriptions.push(this.editDataSubscription)
   }
 
   cancel(key) {
     const editData = [...this.editData$.getValue()]
-    const dataSource = [...this.dataSource$.getValue()]
-    const recoverItem = dataSource.filter(item => item[this.key] === key)[0]
+    const recoverItem = this.dataSource.filter(item => item[this.key] === key)[0]
     if (recoverItem) {
       // recover
       const newData = editData.map(v => {
@@ -61,6 +58,14 @@ module.exports = class CrudHelper {
     const saveItem = editData.filter(item => item[this.key] === key)[0]
     const updatedItem = await this.saveCb({ ...saveItem })
     Object.assign(saveItem, { ...updatedItem })
+    let exist = this.dataSource.filter(item => item[this.key] === key)[0]
+    if(exist) {
+      // update
+      Object.assign(exist, { ...updatedItem })
+    } else {
+      // insert 
+      this.dataSource.push({...updatedItem})
+    }
     this.editData$.next(editData)
   }
 
@@ -92,18 +97,20 @@ module.exports = class CrudHelper {
     const deleteItem = { ...editData.filter(item => item[this.key] === key)[0] }
     await this.deleteCb({ ...deleteItem })
     this.editData$.next(editData.filter(item => item[this.key] !== key))
+    this.dataSource = this.dataSource.filter(item => item[this.key] !== key)
   }
 
   setDataSource(dataSource) {
-    this.dataSource$.next(dataSource)
+    this.dataSource = dataSource
+    this.editData$.next(dataSource)
   }
 
   getViewData() {
-    this.viewData$.getValue()
+    return this.viewData$.getValue()
   }
 
   getDataSource() {
-    this.dataSource$.getValue()
+    return this.dataSource
   }
 
   onViewData(cb) {
