@@ -117,6 +117,11 @@ module.exports = class CrudHelper {
     this.subscriptions.push(this.viewData$.subscribe({ next: cb }))
   }
 
+  triggerNext() {
+    // trigger next round
+    this.editData$.next(this.editData$.getValue())
+  }
+
   destory() {
     for (const sub of this.subscriptions) {
       sub.unsubscribe()
