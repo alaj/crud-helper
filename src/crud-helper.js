@@ -17,7 +17,7 @@ module.exports = class CrudHelper {
       op.map(data => {
         // 筛选
         if (this.filterCb) {
-          data.filter(this.filterCb)
+          data = data.filter(this.filterCb)
         }
 
         // 排序
