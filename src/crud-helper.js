@@ -83,6 +83,19 @@ module.exports = class CrudHelper {
     this.editData$.next(editData)
   }
 
+  entityChange(key, entity) {
+    let editData = [...this.editData$.getValue()]
+    editData = editData.map((item) => {
+      if (item[this.key] === key) {
+        const newItem = { ...entity }
+        return newItem
+      } else {
+        return item
+      }
+    })
+    this.editData$.next(editData)
+  }
+
   insert(insertItem) {
     const editData = [...this.editData$.getValue()]
     if (editData.filter(item => item[this.key] === insertItem[this.key])[0]) {
